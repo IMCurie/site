@@ -1,13 +1,20 @@
 import "./globals.css";
 
+import Navbar from "./components/nav";
+
 export default function RootLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-	return (
-		<html lang="en">
-			<body>{children}</body>
-		</html>
-	);
+  return (
+    <html lang="en">
+      <body className="antialiased mx-6 mt-8 lg:mx-auto max-w-3xl">
+        <main className="flex flex-col">
+          <Navbar />
+          {children}
+        </main>
+      </body>
+    </html>
+  );
 }
