@@ -1,5 +1,5 @@
 import Image from "next/image";
-import avator from "../public/avator.jpg";
+import avatar from "../public/avatar.jpg";
 
 export default function Home() {
   return (
@@ -8,7 +8,7 @@ export default function Home() {
         <h1 className="font-serif font-medium text-xl">IMCurie</h1>
         <div className="relative w-10 h-10">
           <Image
-            src={avator}
+            src={avatar}
             alt="User avatar"
             className="rounded-full object-cover"
             fill
