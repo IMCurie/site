@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const postsDir = path.join(__dirname, "posts");
+const postsDir = path.join(process.cwd(), "app/blog/posts");
 
 type Metadata = {
 	title: string;
