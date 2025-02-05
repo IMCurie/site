@@ -1,6 +1,8 @@
 import { getBlogPosts } from "../utils";
 
-export default async function Post({ params }: { params: { slug: string } }) {
+type Params = Promise<{ slug: string }>;
+
+export default async function Post({ params }: { params: Params }) {
 	const { slug } = await params;
 	const post = getBlogPosts().find((post) => post.slug === slug);
 
