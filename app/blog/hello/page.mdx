@@ -4,7 +4,6 @@ publishedAt: 2025.01.01
 ---
 
 import Image from 'next/image';
-import avatar from '@/public/avatar.jpg';
 
 # Welcome to My Website
 > This is a test page to demonstrate various Markdown and MDX elements.
@@ -21,11 +20,12 @@ Here's some **bold text** and *italic text*. You can also use ~~strikethrough~~ 
 
 Here's a [link to my GitHub](https://github.com/IMCurie).
 
-<div className="w-24 h-24">
+<div className="relative w-24 h-24">
   <Image
-    src={avatar}
+    src="/avatar.jpg"
     alt="User avatar"
     className="rounded-full object-cover"
+    fill
     quality={100}
   />
 </div>
