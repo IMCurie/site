@@ -1,15 +1,9 @@
 import fs from "fs";
 import path from "path";
 
-const postsDir = path.join(process.cwd(), "app/blog/posts");
+const postsDir = path.join(process.cwd(), "app/blog");
 
-type Metadata = {
-	title: string;
-	publishedAt: string;
-	summary?: string;
-};
-
-function formatDate(date: string) {
+export function formatDate(date: string) {
 	let currentDate = new Date().toISOString().split("T")[0];
 
 	if (currentDate === date) {
@@ -19,50 +13,22 @@ function formatDate(date: string) {
 	}
 }
 
-function parseMDXFrontmatter(content: string): {
-	metadata: Metadata;
-	content: string;
-} {
-	let endIndex = content.indexOf("\n---\n");
-	let frontmatterText = content.slice(4, endIndex);
-	let metadata: Record<string, string> = {};
+export async function getBlogPosts() {
+	const isFolder = (source: string) => fs.lstatSync(source).isDirectory();
+	const mdxFolders = fs
+		.readdirSync(postsDir)
+		.filter((name) => isFolder(path.join(postsDir, name)));
 
-	frontmatterText.split("\n").forEach((line) => {
-		let colonIndex = line.indexOf(":");
-		if (colonIndex !== -1) {
-			let key = line.slice(0, colonIndex).trim();
-			let value = line.slice(colonIndex + 1).trim();
-			metadata[key] = value.replace(/^['"](.*)['"]$/, "$1");
-		}
-	});
+	const posts = await Promise.all(
+		mdxFolders.map(async (folder) => {
+			const post = await import(`@/app/blog/${folder}/page.mdx`);
+			return {
+				slug: folder,
+				component: post.default,
+				frontmatter: post.frontmatter,
+			};
+		}),
+	);
 
-	let mainContent = content.slice(endIndex + 5).trim();
-
-	return {
-		metadata: {
-			title: metadata.title,
-			publishedAt: formatDate(metadata.publishedAt),
-			...(metadata.summary && { summary: metadata.summary }),
-		},
-		content: mainContent,
-	};
-}
-
-export function getBlogPosts() {
-	let mdxFiles = fs.readdirSync(postsDir);
-
-	return mdxFiles.map((file) => {
-		let filePath = path.join(postsDir, file);
-		let { metadata, content } = parseMDXFrontmatter(
-			fs.readFileSync(filePath, "utf-8"),
-		);
-
-		let slug = file.replace(/\.mdx$/, "");
-
-		return {
-			slug,
-			metadata,
-			content,
-		};
-	});
+	return posts;
 }
